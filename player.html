@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MeetTrax Mux Player</title>
+    <style>
+      body {
+        margin: 0px;
+        width: 100%;
+        background-color: black;
+        color: white;
+        display: table;
+      }
+      h1 {
+        text-align: center;
+      }
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+      }
+    </style>
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script>
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      document.onreadystatechange = async () => {
+        if (document.readyState === 'interactive') {
+          const parsed = new URL(document.URL);
+          const mp = document.createElement('mux-player');
+
+          const playerDefaults = {
+            'stream-type': 'live',
+            'playback-id': '',
+            'metadata-video-title': 'MeetTrax Player',
+            'primary-color': '#FFFFFF',
+            'secondary-color': '#000000',
+          };
+
+          const playerOptions = Object.assign({}, playerDefaults);
+          for (const [key, value] of parsed.searchParams) {
+            playerOptions[key] = value;
+          }
+
+          for (const key in playerOptions) {
+            if (key == 'playback-id') {
+              continue;
+            }
+            mp.setAttribute(key, playerOptions[key]);
+          }
+
+          const waiting = document.getElementById('waiting');
+
+          waiting.style.display = 'none';
+          mp.setAttribute('playback-id', playerOptions['playback-id']);
+          document.body.appendChild(mp);
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div
+      id="waiting"
+      style="vertical-align: middle; height: 100vh; width: 100%; margin: 0px"
+      class="center"
+    >
+      <h1>Waiting for video to be ready.</h1>
+    </div>
+  </body>
+</html>
